@@ -2,11 +2,18 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Hardware Input Mapper</title>
     <link rel="stylesheet" href="index.css">
   </head>
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+    <h1>Hardware Input Mapper</h1>
+    <div>
+      <p>Button:</p>
+      <input type="text" id="pin" name="pin" onchange="changePin()">
+      <input type="text" id="key" name="key" onchange="changeKey()">
+    </div>
+
   </body>
+  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="./js/renderer.js"></script>
 </html>
