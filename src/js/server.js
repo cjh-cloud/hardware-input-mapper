@@ -11,51 +11,51 @@ module.exports = () => {
   const io = new socket(server);
   const port = 3000; // TODO replace with constant
 
+  // TODO : read from a JSON file to get the structure...
+  var input_config = {
+    button  : [],
+    joystick: [],
+    encoder : []
+  };
+
   // TODO : somehow, need to get a whole configured inputs object struct from the frontend
-  function padawan() {
+  function padawan(board_config) {
     var child = fork(__dirname + '/board');
 
+    // What to do when receiving message from child proc
     child.on('message', (message) => {
       console.log('Creating Johnny-Five Board');
       console.log(message);
     });
 
+    // Send message to child proc
     child.send('START');
+    child.send(board_config);
 
     return child;
   }
 
-  var child = padawan(); // Connect to the board on start
+  // var child = padawan(); // Connect to the board on start
 
   // on Socket.io connection
   io.on('connection', (client) => {
     client.emit('init', { message: 'Server - Client connected, Socket.IO works.' });
 
-    client.on('data', (msg) => {
+    client.emit('config', input_config);
 
-      var state_change = false;
+    client.on('data', (msg) => {
 
       if ('message' in msg) {
         console.log('message: ' + msg.message);
       }
 
-      // check if msg has a pin/key
-      if ('pin' in msg) {
-        input_key = msg.pin;
-        console.log('pin changed');
-
-        state_change = true;
-      }
-      if ('key' in msg) {
-        output_key = msg.key;
-        console.log('key changed');
-
-        state_change = true;
-      }
-
-      if (state_change) {
-        child.kill();
-        child = padawan();
+      // TODO
+      if ('config' in msg) {
+        // Compare msg.config with what we currently have (from json file eg)
+        // child.kill();
+        // child = padawan(msg.config);
+        console.log("test");
+        console.log(msg.config);
       }
 
     });

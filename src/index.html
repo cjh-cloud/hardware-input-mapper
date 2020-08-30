@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="index.css">
   </head>
   <body>
+
     <h1>Hardware Input Mapper</h1>
-    <div>
-      <p>Button:</p>
-      <input type="text" id="pin" name="pin" onchange="changePin()">
-      <input type="text" id="key" name="key" onchange="changeKey()">
+
+    <div id="inputs">
+      <button onclick="addBtn()">➕</button>
+      <div id="buttons"></div>
     </div>
 
   </body>
