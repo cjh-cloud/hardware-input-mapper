@@ -34,13 +34,17 @@ function addBtn() {
 
   var new_btn_cfg = document.createElement('div');
   new_btn_cfg.id = 'button_' + index;
-  new_btn_cfg.innerHTML = `<input type='text' id='button_pin_${index}' name='button_pin_${index}' onchange='change(this.name)'>
-  <input type='text' id='button_key_${index}' name='button_key_${index}' onchange='change(this.name)'>
-  <button name='button_${index}' onclick='delBtn(this.name)'>🗑️</button>`
+  new_btn_cfg.innerHTML = `<div class="input-group"><div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">🅱️</span></div>
+  <input type='text' class='form-control' placeholder='pin' id='button_pin_${index}' name='button_pin_${index}' onchange='change(this.name)'>
+  <input type='text' class='form-control' placeholder='key' id='button_key_${index}' name='button_key_${index}' onchange='change(this.name)'>
+  <div class="input-group-append">
+  <button type='button' class='btn input-group-text' name='button_${index}' onclick='delBtn(this.name)'>🗑️</button>
+  </div>
+  </div>`
 
   btnsDiv.appendChild(new_btn_cfg);
 
-  input_config.button.push({pin: null, key: null});
+  input_config.button.push({pin: '', key: ''});
 
   socket.emit('data', { config: input_config }); // * updating with empty button config
 }
@@ -61,9 +65,13 @@ function delBtn(button_id) {
 
   for (var i=0; i<input_config.button.length; i++) {
     new_buttons_html += `<div class='button' id='button_${i}'>
-    <input type='text' id='button_pin_${i}' name='button_pin_${i}' onchange='change(this.name)' value='${input_config.button[i].pin}'>
-    <input type='text' id='button_key_${i}' name='button_key_${i}' onchange='change(this.name)' value='${input_config.button[i].key}'>
-    <button name='button_${i}' onclick='delBtn(this.name)'>🗑️</button>
+    <div class="input-group"><div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">🅱️</span></div>
+    <input type='text' class='form-control' placeholder='pin' id='button_pin_${i}' name='button_pin_${i}' onchange='change(this.name)' value='${input_config.button[i].pin}'>
+    <input type='text' class='form-control' placeholder='key' id='button_key_${i}' name='button_key_${i}' onchange='change(this.name)' value='${input_config.button[i].key}'>
+    <div class="input-group-append">
+    <button type='button' class='btn input-group-text' name='button_${index}' onclick='delBtn(this.name)'>🗑️</button>
+    </div>
+    </div>
     </div>`
   }
 
