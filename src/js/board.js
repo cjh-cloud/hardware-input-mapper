@@ -6,11 +6,11 @@ process.on('message', (message) => {
   if (message == 'START') {
 
     console.log('Child process received START message');
-    process.send("Connecting to board...");
+    process.send("Received START message...");
 
   } else {
-
     // message will be our board config
+    process.send("Creating board config...");
 
     // on Arduino Board ready
     board.on('ready', function() {
@@ -18,8 +18,9 @@ process.on('message', (message) => {
       var led_pin    = 13; // Arduino board LED
       var led = new five.Led(led_pin);
 
-      for (btn_cfg in message.btn) {
-        var input_pin  = btn_cfg.pin;
+      message.button.forEach(btn_cfg => {
+
+        var input_pin  = parseInt(btn_cfg.pin); // Pin needs to be an integer
         var output_key = btn_cfg.key;
 
         var btn = new five.Button({
@@ -32,10 +33,10 @@ process.on('message', (message) => {
           robot.keyTap(output_key)
         });
 
-        button.on("up", function() {
+        btn.on("up", function() {
           led.off();
         })
-      }
+      });
 
     });
 

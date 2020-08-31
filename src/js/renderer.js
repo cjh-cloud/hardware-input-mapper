@@ -36,7 +36,7 @@ function addBtn() {
   new_btn_cfg.id = 'button_' + index;
   new_btn_cfg.innerHTML = `<input type='text' id='button_pin_${index}' name='button_pin_${index}' onchange='change(this.name)'>
   <input type='text' id='button_key_${index}' name='button_key_${index}' onchange='change(this.name)'>
-  <button name='button_${index}' onclick='delBtn(this.name)'>Del</button>`
+  <button name='button_${index}' onclick='delBtn(this.name)'>🗑️</button>`
 
   btnsDiv.appendChild(new_btn_cfg);
 

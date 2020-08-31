@@ -35,7 +35,7 @@ module.exports = () => {
     return child;
   }
 
-  // var child = padawan(); // Connect to the board on start
+  var child = padawan(input_config); // Connect to the board on start
 
   // on Socket.io connection
   io.on('connection', (client) => {
@@ -52,8 +52,8 @@ module.exports = () => {
       // TODO
       if ('config' in msg) {
         // Compare msg.config with what we currently have (from json file eg)
-        // child.kill();
-        // child = padawan(msg.config);
+        child.kill();
+        child = padawan(msg.config);
         console.log("test");
         console.log(msg.config);
       }
