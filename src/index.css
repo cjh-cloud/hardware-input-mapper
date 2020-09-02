@@ -3,7 +3,17 @@ body {
   margin: auto;
   max-width: 38rem;
   padding: 2rem;
-  background: #300a24;
-  /* purple 310d20 40112a */
+  background: #322a3c;
+  color: #ff7e52;
+  /* purple 310d20 40112a 300a24 2e1f42*/
   /* orange dd4814 */
+}
+
+.text-icon {
+  color: #fff;
+}
+
+hr {
+  color: #fff;
+  background: #fff;
 }
