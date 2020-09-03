@@ -1,6 +1,7 @@
 const socket = io.connect('http://localhost:' + 3000);
 
 var input_config;
+var is_config_loaded = false;
 
 // log the message, check if socket.io server is connected
 socket.on('init', (data) => {
@@ -8,9 +9,22 @@ socket.on('init', (data) => {
   socket.emit('data', { message: 'Client - Server connected, Socket.IO works.' });
 });
 
+// Receive initial config from backend
 socket.on('config', (data) => {
   input_config = data;
-})
+
+  // TODO : Check if this is needed
+  if (!is_config_loaded) {
+    for (input_type in input_config) {
+
+      var new_input_div = loadInput(input_type);
+
+      var inputsDiv = document.getElementById(`${input_type}_inputs`);
+      inputsDiv.appendChild(new_input_div);
+    }
+    is_config_loaded = true;
+  }
+});
 
 // Update config JSON
 function change(input_name) {
@@ -90,7 +104,7 @@ function delInput(input_type, input_id) {
 
   var new_input_div_html = '';
 
-  for (var i=0; i<input_config.button.length; i++) {
+  for (var i=0; i<input_config[input_type].length; i++) {
     new_input_div_html += `<div id='${input_type}_${i}'>${buildHtml(input_type, i)}</div>`
     //  class='${input_type}'
   }
@@ -101,4 +115,23 @@ function delInput(input_type, input_id) {
   inputsDiv.appendChild(new_input_div);
 
   socket.emit('data', { config: input_config }); // * updating with empty button config
+}
+
+function loadInput(input_type) {
+
+  // Create new buttons div and recreate button configs
+  new_input_div = document.createElement('div')
+  new_input_div.id = `${input_type}s`;
+
+  var new_input_div_html = '';
+
+  for (var i=0; i<input_config[input_type].length; i++) {
+    new_input_div_html += `<div id='${input_type}_${i}'>${buildHtml(input_type, i)}</div>`
+    //  class='${input_type}'
+  }
+
+  new_input_div.innerHTML = new_input_div_html;
+
+  return new_input_div;
+
 }

@@ -1,6 +1,7 @@
-const express = require('express')
-const socket = require('socket.io')
-const http = require('http')
+const express = require('express');
+const socket = require('socket.io');
+const http = require('http');
+const fs = require('fs');
 
 const { fork } = require('child_process');
 
@@ -11,12 +12,33 @@ module.exports = () => {
   const io = new socket(server);
   const port = 3000; // TODO replace with constant
 
-  // TODO : read from a JSON file to get the structure...
+  // Default config
   var input_config = {
     button  : [],
     joystick: [],
     encoder : []
   };
+  var config_file = './config.json';
+
+  // Load Config
+  try {
+    if(fs.existsSync(config_file)) {
+      console.log("exist");
+      // file exists - read config from file
+      fs.readFile(config_file, (err, data) => {
+        if (err) throw err;
+        input_config = JSON.parse(data);
+      })
+    } else {
+      console.log("no exist");
+      // file doesn't exist - create boiler plate config file
+      fs.writeFileSync(config_file, JSON.stringify(input_config));
+    }
+  } catch(err) {
+    console.error(err);
+  }
+
+
 
   // TODO : somehow, need to get a whole configured inputs object struct from the frontend
   function padawan(board_config) {
@@ -52,10 +74,11 @@ module.exports = () => {
       // TODO
       if ('config' in msg) {
         // Compare msg.config with what we currently have (from json file eg)
+        input_config = msg.config;
         child.kill();
-        child = padawan(msg.config);
-        console.log("test");
+        child = padawan(input_config);
         console.log(msg.config);
+        fs.writeFileSync(config_file, JSON.stringify(input_config));
       }
 
     });
