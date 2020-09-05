@@ -41,6 +41,48 @@ function change(input_name) {
   socket.emit('data', { config: input_config });
 }
 
+function getKeys() {
+  keys = [
+    'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+    'backspace',
+    'delete',
+    'enter',
+    'tab',
+    'escape',
+    'up','down','right','left',
+    'home','end','pageup','pagedown',
+    'f1','f2','f3','f4','f5','f6','f7','f8','f9','f10','f11','f12',
+    'command',
+    'alt',
+    'contorl',
+    'shift',
+    'right_shift',
+    'space',
+    'printscreen', // No Mac
+    'insert', // No Mac
+    'audio_mute','audio_vol_down','audio_vol_up','audio_play',
+    'audio_stop','audio_pause','audio_prev','audio_next',
+    'audio_rewind','audio_forward','audio_repeat','audio_random', // Linux Only
+    // 'numpad_0','numpad_1','numpad_2','numpad_3','numpad_4','numpad_5','numpad_6','numpad_7','numpad_8','numpad_9', // No Linux
+    // 'lights_mon_up,'lights_mon_down','lights_kbd_toggle','lights_kbd_up','lights_kbd_down', // No Win
+  ]
+  return keys;
+}
+
+// Build options for select tag - set selected based on config JSON
+function getKeyOptions(value) {
+  var options = '';
+  getKeys().forEach(element => {
+    options += `<option value="${element}"`;
+    if( value == element ) {
+      options += `selected="selected"`;
+    }
+    options += `>${element}`;
+  });
+
+  return options;
+}
+
 function addInputIcon(input_type, index) {
   var icon_html;
   if (input_type == 'button') {
@@ -50,7 +92,10 @@ function addInputIcon(input_type, index) {
     </svg>
     </span></div>
     <input type='text' class='form-control' placeholder='pin' id='${input_type}_pin_${index}' name='${input_type}_pin_${index}' onchange='change(this.name)' value='${input_config[input_type][index].pin}'>
-    <input type='text' class='form-control' placeholder='key' id='${input_type}_key_${index}' name='${input_type}_key_${index}' onchange='change(this.name)' value='${input_config[input_type][index].key}'>`;
+    <select name='${input_type}_key_${index}' id='${input_type}_key_${index}' onchange='change(this.name)'>
+    ${getKeyOptions(input_config[input_type][index].key)}
+    </select>
+    `;
   } else if (input_type == 'encoder') {
     icon_html = `
     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -59,9 +104,13 @@ function addInputIcon(input_type, index) {
     </svg>
     </span></div>
     <input type='text' class='form-control' placeholder='pin' id='${input_type}_pin1_${index}' name='${input_type}_pin1_${index}' onchange='change(this.name)' value='${input_config[input_type][index].pin1}'>
-    <input type='text' class='form-control' placeholder='key' id='${input_type}_key1_${index}' name='${input_type}_key1_${index}' onchange='change(this.name)' value='${input_config[input_type][index].key1}'>
+    <select name='${input_type}_key1_${index}' id='${input_type}_key1_${index}' onchange='change(this.name)'>
+    ${getKeyOptions(input_config[input_type][index].key1)}
+    </select>
     <input type='text' class='form-control' placeholder='pin' id='${input_type}_pin2_${index}' name='${input_type}_pin2_${index}' onchange='change(this.name)' value='${input_config[input_type][index].pin2}'>
-    <input type='text' class='form-control' placeholder='key' id='${input_type}_key2_${index}' name='${input_type}_key2_${index}' onchange='change(this.name)' value='${input_config[input_type][index].key2}'>
+    <select name='${input_type}_key2_${index}' id='${input_type}_key2_${index}' onchange='change(this.name)'>
+    ${getKeyOptions(input_config[input_type][index].key2)}
+    </select>
     `;
   }
   return icon_html;
