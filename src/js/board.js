@@ -1,5 +1,8 @@
 const robot = require('robotjs');
 const five = require('johnny-five');
+
+const rotaryEncoder = require('./encoder');
+
 var board = new five.Board();
 
 process.on('message', (message) => {
@@ -37,6 +40,29 @@ process.on('message', (message) => {
           led.off();
         })
       });
+
+      message.encoder.forEach(enc_cfg => {
+        const upButton = new five.Button(parseInt(enc_cfg.pin1));
+        const downButton = new five.Button(parseInt(enc_cfg.pin2));
+        const pressButton = new five.Button(11);
+
+        rotaryEncoder({
+          upButton,
+          downButton,
+          pressButton,
+          onUp: () => {
+            console.log('up');
+            robot.keyTap(enc_cfg.key1);
+          },
+          onDown: () => {
+            console.log('down');
+            robot.keyTap(enc_cfg.key2);
+          },
+          onPress: () => {
+            console.log('press');
+          },
+        });
+      })
 
     });
 
