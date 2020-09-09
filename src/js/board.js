@@ -51,11 +51,9 @@ process.on('message', (message) => {
           downButton,
           pressButton,
           onUp: () => {
-            console.log('up');
             robot.keyTap(enc_cfg.key1);
           },
           onDown: () => {
-            console.log('down');
             robot.keyTap(enc_cfg.key2);
           },
           onPress: () => {
