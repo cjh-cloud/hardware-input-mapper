@@ -21,8 +21,8 @@ const createWindow = () => {
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
-   // Init Express + Socket.IO server
-   initServer()
+  // Init Express + Socket.IO server
+  initServer()
 };
 
 // This method will be called when Electron has finished
