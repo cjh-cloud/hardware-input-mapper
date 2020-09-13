@@ -74,7 +74,7 @@ const initServer = function () {
   });
 
   // make server listen to the preconfigured port
-  server.listen(port);
+  e_server.listen(port);
 
 }
 
