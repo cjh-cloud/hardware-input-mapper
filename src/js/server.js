@@ -12,24 +12,27 @@ const port = 3000;
 var child;
 
 const anakin = function () {
-  child.kill();
+  if (child)
+    child.kill();
 }
 
 // Create child process
 function padawan(board_config) {
-  var new_child = fork(__dirname + '/board');
+  if (!JSON.stringify(board_config).includes('""')) {
+    var new_child = fork(__dirname + '/board');
 
-  // What to do when receiving message from child proc
-  new_child.on('message', (message) => {
-    if ('connected' in message)
-      if (!message.connected);
-        anakin();
-  });
+    // What to do when receiving message from child proc
+    new_child.on('message', (message) => {
+      if ('connected' in message)
+        if (!message.connected);
+          anakin();
+    });
 
-  // Send board config to child proc
-  new_child.send(board_config);
+    // Send board config to child proc
+    new_child.send(board_config);
 
-  return new_child;
+    return new_child;
+  }
 }
 
 const initServer = function () {
