@@ -3,12 +3,6 @@ const socket = io.connect('http://localhost:' + 3000);
 var input_config;
 var is_config_loaded = false;
 
-// log the message, check if socket.io server is connected
-socket.on('init', (data) => {
-  console.log(data.message);
-  socket.emit('data', { message: 'Client - Server connected, Socket.IO works.' });
-});
-
 // Receive initial config from backend
 socket.on('config', (data) => {
   input_config = data;
@@ -44,6 +38,7 @@ function change(input_name) {
 function getKeys() {
   keys = [
     'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+    '1','2','3','4','5','6','7','8','9','0',
     'backspace',
     'delete',
     'enter',
@@ -117,7 +112,7 @@ function addInputIcon(input_type, index) {
 }
 
 function buildHtml(input_type, index) {
-  var thing = `<div class="input-group"><div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">
+  return `<div class="input-group"><div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">
   ${addInputIcon(input_type, index)}
   <div class="input-group-append">
   <button type='${input_type}' class='btn input-group-text' name='${input_type}_${index}' onclick='delInput("${input_type}", this.name)'>
@@ -128,7 +123,6 @@ function buildHtml(input_type, index) {
   </button>
   </div>
   </div>`;
-  return thing;
 }
 
 // Add new button config elements
@@ -168,7 +162,6 @@ function delInput(input_type, input_id) {
 
   for (var i=0; i<input_config[input_type].length; i++) {
     new_input_div_html += `<div id='${input_type}_${i}'>${buildHtml(input_type, i)}</div>`
-    //  class='${input_type}'
   }
 
   new_input_div.innerHTML = new_input_div_html;
@@ -189,7 +182,6 @@ function loadInput(input_type) {
 
   for (var i=0; i<input_config[input_type].length; i++) {
     new_input_div_html += `<div id='${input_type}_${i}'>${buildHtml(input_type, i)}</div>`
-    //  class='${input_type}'
   }
 
   new_input_div.innerHTML = new_input_div_html;

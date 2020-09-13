@@ -1,7 +1,8 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
-const initServer = require('./js/server')
+const server = require('./js/server');
+const debug = false;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -19,10 +20,11 @@ const createWindow = () => {
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (debug)
+    mainWindow.webContents.openDevTools();
 
   // Init Express + Socket.IO server
-  initServer()
+  server.initServer();
 };
 
 // This method will be called when Electron has finished
@@ -35,6 +37,7 @@ app.on('ready', createWindow);
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    server.anakin();
     app.quit();
   }
 });

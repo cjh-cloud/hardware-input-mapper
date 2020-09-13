@@ -1,17 +1,38 @@
 const express = require('express');
 const socket = require('socket.io');
 const http = require('http');
+const { fork } = require('child_process');
 const Store = require('electron-store');
 const store = new Store();
 
-const { fork } = require('child_process');
+const e_app = express();
+const e_server = http.createServer(e_app);
+const io = new socket(e_server);
+const port = 3000;
+var child;
 
-// TODO : do I need module.exports?
-module.exports = () => {
-  const app = express();
-  const server = http.createServer(app);
-  const io = new socket(server);
-  const port = 3000; // TODO replace with constant
+const anakin = function () {
+  child.kill();
+}
+
+// Create child process
+function padawan(board_config) {
+  var new_child = fork(__dirname + '/board');
+
+  // What to do when receiving message from child proc
+  new_child.on('message', (message) => {
+    if ('connected' in message)
+      if (!message.connected);
+        anakin();
+  });
+
+  // Send board config to child proc
+  new_child.send(board_config);
+
+  return new_child;
+}
+
+const initServer = function () {
 
   // Default config
   var input_config = {
@@ -31,43 +52,21 @@ module.exports = () => {
     console.error(err);
   }
 
-
-  // Create child process
-  function padawan(board_config) {
-    var child = fork(__dirname + '/board');
-
-    // What to do when receiving message from child proc
-    child.on('message', (message) => {
-      console.log('Creating Johnny-Five Board');
-      console.log(message);
-    });
-
-    // Send message to child proc
-    child.send('START');
-    child.send(board_config);
-
-    return child;
-  }
-
-  var child = padawan(input_config); // Connect to the board on start
+  child = padawan(input_config); // Connect to the board on start
 
   // on Socket.io connection
   io.on('connection', (client) => {
-    client.emit('init', { message: 'Server - Client connected, Socket.IO works.' });
 
+    // Send the board config to the board on connection
     client.emit('config', input_config);
 
     client.on('data', (msg) => {
-
-      if ('message' in msg) {
-        console.log('message: ' + msg.message);
-      }
 
       // Save updated config and recreate child proc
       if ('config' in msg) {
         input_config = msg.config;
         store.set('config', input_config);
-        child.kill();
+        anakin();
         child = padawan(input_config);
       }
 
@@ -76,4 +75,10 @@ module.exports = () => {
 
   // make server listen to the preconfigured port
   server.listen(port);
+
+}
+
+module.exports = {
+  anakin : anakin,
+  initServer : initServer
 }
