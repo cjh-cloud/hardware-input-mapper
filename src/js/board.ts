@@ -1,20 +1,22 @@
 const robot = require('robotjs');
 const five = require('johnny-five');
-const rotaryEncoder = require('./encoder');
+import { rotaryEncoder } from './encoder';
 
 let board = new five.Board();
 
-// This is to describe a JSON payload lol - Feel like message needs an interface and class
+// Message doesn't have to have a Button or an Encoder
 interface Message {
   button?: Button[]
   encoder?: Encoder[]
 }
 
+// Button must have a pin and a key
 interface Button {
   pin: string
   key: string
 }
 
+// Encoder must have 2 pins and 2 keys
 interface Encoder {
   pin1: string
   pin2: string
@@ -38,7 +40,7 @@ process.on('message', (message: Message) => {
         });
 
         btn.on("down", function() {
-          robot.keyTap(output_key)
+          robot.keyTap(output_key);
         });
       });
     }
@@ -56,7 +58,8 @@ process.on('message', (message: Message) => {
           robot.keyTap(enc_cfg.key2);
         }
 
-        rotaryEncoder(
+        let rotaryEncoderInstance = new rotaryEncoder();
+        rotaryEncoderInstance.actions(
           upButton,
           downButton,
           onUp,
