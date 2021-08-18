@@ -22,14 +22,16 @@ socket.on('config', (data) => {
 
 // Update config JSON
 function change(input_name) {
-  console.log(document.getElementById(input_name).value);
+  if (input_name) {
+    console.log(document.getElementById(input_name).value);
 
-  let input_name_elements = input_name.split("_"); // e.g. pin_0 -> [pin, 0]
-  let type = input_name_elements[0]; // e.g. button
-  let name = input_name_elements[1]; // e.g. pin
-  let index = input_name_elements[2]; // e.g. 0
+    let input_name_elements = input_name.split("_"); // e.g. pin_0 -> [pin, 0]
+    let type = input_name_elements[0]; // e.g. button
+    let name = input_name_elements[1]; // e.g. pin
+    let index = input_name_elements[2]; // e.g. 0
 
-  input_config[type][index][name] = document.getElementById(input_name).value;
+    input_config[type][index][name] = document.getElementById(input_name).value;
+  }
 
   // send new input_config to server via socketio
   socket.emit('data', { config: input_config });

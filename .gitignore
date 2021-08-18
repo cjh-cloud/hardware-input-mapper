@@ -1,4 +1,8 @@
 dist/
+board.js
+encoder.js
+server.js
+index.js
 
 # Logs
 logs

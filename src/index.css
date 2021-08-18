@@ -18,6 +18,16 @@ h1 {
   text-align: center;
 }
 
+.title {
+  float: left;
+  width: 90%;
+}
+
+.connect-button {
+  float: right;
+  width: 10%;
+}
+
 .header {
   float: left;
   width: 50%;
