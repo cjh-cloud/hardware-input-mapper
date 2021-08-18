@@ -1,30 +1,38 @@
-const express = require('express');
-const socket = require('socket.io');
-const http = require('http');
-const { fork } = require('child_process');
+// const express = require('express');
+// const socket = require('socket.io');
+import express from "express";
+// import * as socket from "socket.io";
+import { Server, Socket } from "socket.io";
+import http from "http";
+import { ChildProcess, fork } from "child_process";
 const Store = require('electron-store');
 const store = new Store();
 
 const e_app = express();
 const e_server = http.createServer(e_app);
-const io = new socket(e_server);
+// const io = new socket(e_server);
+let io = new Server(e_server);
 const port = 3000;
-var child;
+let child: ChildProcess | null;
 
 const anakin = function () {
   if (child)
     child.kill();
 }
 
+interface Message {
+  connected: Boolean
+}
+
 // Create child process
-function padawan(board_config) {
+function padawan(board_config: object) {
   if (!JSON.stringify(board_config).includes('""')) {
-    var new_child = fork(__dirname + '/board');
+    let new_child = fork(__dirname + '/board');
 
     // What to do when receiving message from child proc
-    new_child.on('message', (message) => {
+    new_child.on('message', (message: Message) => {
       if ('connected' in message)
-        if (!message.connected);
+        if (!message.connected)
           anakin();
     });
 
@@ -33,12 +41,13 @@ function padawan(board_config) {
 
     return new_child;
   }
+  return null;
 }
 
 const initServer = function () {
 
   // Default config
-  var input_config = {
+  let input_config = {
     button  : [],
     encoder : []
   };

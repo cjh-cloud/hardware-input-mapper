@@ -1,7 +1,7 @@
 const socket = io.connect('http://localhost:' + 3000);
 
-var input_config;
-var is_config_loaded = false;
+let input_config;
+let is_config_loaded = false;
 
 // Receive initial config from backend
 socket.on('config', (data) => {
@@ -11,9 +11,9 @@ socket.on('config', (data) => {
   if (!is_config_loaded) {
     for (input_type in input_config) {
 
-      var new_input_div = loadInput(input_type);
+      let new_input_div = loadInput(input_type);
 
-      var inputsDiv = document.getElementById(`${input_type}_inputs`);
+      let inputsDiv = document.getElementById(`${input_type}_inputs`);
       inputsDiv.appendChild(new_input_div);
     }
     is_config_loaded = true;
@@ -24,10 +24,10 @@ socket.on('config', (data) => {
 function change(input_name) {
   console.log(document.getElementById(input_name).value);
 
-  var input_name_elements = input_name.split("_"); // e.g. pin_0 -> [pin, 0]
-  var type = input_name_elements[0]; // e.g. button
-  var name = input_name_elements[1]; // e.g. pin
-  var index = input_name_elements[2]; // e.g. 0
+  let input_name_elements = input_name.split("_"); // e.g. pin_0 -> [pin, 0]
+  let type = input_name_elements[0]; // e.g. button
+  let name = input_name_elements[1]; // e.g. pin
+  let index = input_name_elements[2]; // e.g. 0
 
   input_config[type][index][name] = document.getElementById(input_name).value;
 
@@ -36,7 +36,7 @@ function change(input_name) {
 }
 
 function getKeys() {
-  keys = [
+  let keys = [
     'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
     '1','2','3','4','5','6','7','8','9','0',
     'backspace',
@@ -66,7 +66,7 @@ function getKeys() {
 
 // Build options for select tag - set selected based on config JSON
 function getKeyOptions(value) {
-  var options = '';
+  let options = '';
   getKeys().forEach(element => {
     options += `<option value="${element}"`;
     if( value == element ) {
@@ -79,7 +79,7 @@ function getKeyOptions(value) {
 }
 
 function addInputIcon(input_type, index) {
-  var icon_html;
+  let icon_html;
   if (input_type == 'button') {
     icon_html = `
     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -127,8 +127,8 @@ function buildHtml(input_type, index) {
 
 // Add new button config elements
 function addInput(input_type) {
-  var inputsDiv = document.getElementById(`${input_type}s`);
-  var index = input_config[input_type].length;
+  let inputsDiv = document.getElementById(`${input_type}s`);
+  let index = input_config[input_type].length;
 
   // TODO : Add input type here
   if (input_type == 'button') {
@@ -137,7 +137,7 @@ function addInput(input_type) {
     input_config[input_type].push({pin1: '', key1: '', pin2: '', key2: ''});
   }
 
-  var new_input_cfg = document.createElement('div');
+  let new_input_cfg = document.createElement('div');
   new_input_cfg.id = `${input_type}_${index}`;
   new_input_cfg.innerHTML = buildHtml(input_type, index);
 
@@ -147,26 +147,26 @@ function addInput(input_type) {
 }
 
 function delInput(input_type, input_id) {
-  var index = input_id.split("_")[1]; // e.g. button_0, gets 0
+  let index = input_id.split("_")[1]; // e.g. button_0, gets 0
   input_config[input_type].splice(index, 1); // e.g. input_config.button.splice
 
   // Remove the entire buttons div
-  var input_div = document.querySelector(`#${input_type}s`);
+  let input_div = document.querySelector(`#${input_type}s`);
   input_div.parentNode.removeChild(input_div); // Get the div from its parent i.e. remove itself
 
   // Create new buttons div and recreate button configs
   new_input_div = document.createElement('div')
   new_input_div.id = `${input_type}s`;
 
-  var new_input_div_html = '';
+  let new_input_div_html = '';
 
-  for (var i=0; i<input_config[input_type].length; i++) {
+  for (let i=0; i<input_config[input_type].length; i++) {
     new_input_div_html += `<div id='${input_type}_${i}'>${buildHtml(input_type, i)}</div>`
   }
 
   new_input_div.innerHTML = new_input_div_html;
 
-  var inputsDiv = document.getElementById(`${input_type}_inputs`);
+  let inputsDiv = document.getElementById(`${input_type}_inputs`);
   inputsDiv.appendChild(new_input_div);
 
   socket.emit('data', { config: input_config }); // * updating with empty button config
@@ -178,9 +178,9 @@ function loadInput(input_type) {
   new_input_div = document.createElement('div')
   new_input_div.id = `${input_type}s`;
 
-  var new_input_div_html = '';
+  let new_input_div_html = '';
 
-  for (var i=0; i<input_config[input_type].length; i++) {
+  for (let i=0; i<input_config[input_type].length; i++) {
     new_input_div_html += `<div id='${input_type}_${i}'>${buildHtml(input_type, i)}</div>`
   }
 
